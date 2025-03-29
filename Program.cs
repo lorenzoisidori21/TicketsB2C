@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using TicketsB2C.Business;
+using TicketsB2C.DataAccess;
 using TicketsB2C.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,8 @@ builder.Services.AddDbContext<TicketsB2CDbContext>(opt => opt.UseSqlite(connecti
 //builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<TicketsDal, TicketsDal>();
+builder.Services.AddScoped<TicketsBusiness, TicketsBusiness>();
 
 var app = builder.Build();
 

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TicketsB2C.Business;
 using TicketsB2C.Dto;
 using TicketsB2C.Models;
 
@@ -15,35 +16,33 @@ namespace TicketsB2C.Controllers
     public class TicketsController : ControllerBase
     {
         private readonly TicketsB2CDbContext _context;
+        private readonly TicketsBusiness _business;
 
-        public TicketsController(TicketsB2CDbContext context)
+        public TicketsController(TicketsB2CDbContext context, TicketsBusiness business)
         {
             _context = context;
+            _business = business;
         }
 
         // GET: api/Tickets
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TicketDto>>> GetTickets()
         {
-            var tickets = await _context.Tickets
-                .Include(t => t.Carrier) // Eager loading to include Carrier data
-                .Include(t => t.Destination) // Eager loading to include Carrier data
-                .Include(t => t.Departure) // Eager loading to include Carrier data
-                .Include(t => t.Type) // Eager loading to include Carrier data
-                .Select(t => new TicketDto()
-                {
-                    Id = t.Id,
-                    Price = t.Price,
-                    Departure = t.Departure.Name,
-                    Destination = t.Destination.Name,
-                    TransportType = t.Type.Description,
-                    Carrier = t.Carrier.Name
-                })
-                .ToListAsync();
+            var tickets = await _business.GetTickets();
+            var dto = tickets.Select(t => new TicketDto()
+            {
+                Id = t.Id,
+                Price = t.Price,
+                Departure = t.Departure.Name,
+                Destination = t.Destination.Name,
+                TransportType = t.Type.Description,
+                Carrier = t.Carrier.Name
+            })
+                .ToList();
 
-            return Ok(tickets);
+            return Ok(dto);
         }
-        
+
         /// <summary>
         /// GET: api/Tickets/TicketsByCarrier
         /// </summary>
@@ -64,22 +63,7 @@ namespace TicketsB2C.Controllers
                     Title = "Invalid request",
                     Detail = "Please, insert a carrier."
                 });
-            var tickets = await _context.Tickets
-                .Include(t => t.Carrier)
-                .Include(t => t.Destination)
-                .Include(t => t.Departure)
-                .Include(t => t.Type)
-                .Where(t => t.Carrier.Name == carrier)
-                .Select(t => new TicketDto()
-                {
-                    Id = t.Id,
-                    Price = t.Price,
-                    Departure = t.Departure.Name,
-                    Destination = t.Destination.Name,
-                    TransportType = t.Type.Description,
-                    Carrier = t.Carrier.Name
-                })
-                .ToListAsync();
+            var tickets = await _business.GetTicketsByCarrier(carrier);
 
             if (!tickets.Any())
             {
@@ -90,7 +74,19 @@ namespace TicketsB2C.Controllers
                     Detail = "No available tickets for that carrier"
                 });
             }
-            return Ok(tickets);
+
+            var dto = tickets.Select(t => new TicketDto()
+            {
+                Id = t.Id,
+                Price = t.Price,
+                Departure = t.Departure.Name,
+                Destination = t.Destination.Name,
+                TransportType = t.Type.Description,
+                Carrier = t.Carrier.Name
+            })
+            .ToList();
+
+            return Ok(dto);
         }
         /// <summary>
         /// GET: api/Tickets/SearchTickets
@@ -121,22 +117,7 @@ namespace TicketsB2C.Controllers
                     Detail = "Please, insert a destination"
                 });
 
-            var tickets = await _context.Tickets
-                .Include(t => t.Carrier) // Eager loading to include Carrier data
-                .Include(t => t.Destination) // Eager loading to include Carrier data
-                .Include(t => t.Departure) // Eager loading to include Carrier data
-                .Include(t => t.Type) // Eager loading to include Carrier data
-                .Where(t => t.Departure.Name == departure && t.Destination.Name == destination)
-                .Select(t => new TicketDto()
-                {
-                    Id = t.Id,
-                    Price = t.Price,
-                    Departure = t.Departure.Name,
-                    Destination = t.Destination.Name,
-                    TransportType = t.Type.Description,
-                    Carrier = t.Carrier.Name
-                })
-                .ToListAsync();
+            var tickets = await _business.SearchTickets(departure, destination);
 
             if (!tickets.Any())
             {
@@ -147,7 +128,19 @@ namespace TicketsB2C.Controllers
                     Detail = "No available tickets for those cities"
                 });
             }
-            return Ok(tickets);
+
+            var dto = tickets.Select(t => new TicketDto()
+            {
+                Id = t.Id,
+                Price = t.Price,
+                Departure = t.Departure.Name,
+                Destination = t.Destination.Name,
+                TransportType = t.Type.Description,
+                Carrier = t.Carrier.Name
+            })
+            .ToList();
+            
+            return Ok(dto);
         }
     }
 }
