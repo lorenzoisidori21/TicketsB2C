@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TicketsB2C.Dto;
 using TicketsB2C.Models;
 
 namespace TicketsB2C.Controllers
@@ -22,9 +23,25 @@ namespace TicketsB2C.Controllers
 
         // GET: api/Tickets
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Ticket>>> GetTickets()
+        public async Task<ActionResult<IEnumerable<TicketDto>>> GetTickets()
         {
-            return await _context.Tickets.ToListAsync();
+            var tickets = await _context.Tickets
+                .Include(t => t.Carrier) // Eager loading to include Carrier data
+                .Include(t => t.Destination) // Eager loading to include Carrier data
+                .Include(t => t.Departure) // Eager loading to include Carrier data
+                .Include(t => t.Type) // Eager loading to include Carrier data
+                .Select(t => new TicketDto()
+                {
+                    Id = t.Id,
+                    Price = t.Price,
+                    Departure = t.Departure.Name,
+                    Destination = t.Destination.Name,
+                    TransportType = t.Type.Description,
+                    Carrier = t.Carrier.Name
+                })
+                .ToListAsync();
+
+            return Ok(tickets);
         }
 
         // GET: api/Tickets/5

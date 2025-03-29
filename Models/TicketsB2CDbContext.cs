@@ -15,7 +15,17 @@ public class TicketsB2CDbContext : DbContext
             .HasKey(city => city.Id);
         modelBuilder.Entity<TransportType>()
             .HasKey(transportType => transportType.Id);
+        modelBuilder.Entity<Carrier>()
+            .HasKey(carrier => carrier.Id);
         modelBuilder.Entity<Ticket>()
             .HasKey(ticket => ticket.Id);
+        modelBuilder.Entity<Ticket>()
+            .HasOne(t => t.Departure);
+        modelBuilder.Entity<Ticket>()
+            .HasOne(t => t.Destination);
+        modelBuilder.Entity<Ticket>()
+            .HasOne(t => t.Type);
+        modelBuilder.Entity<Ticket>()
+            .HasOne(t => t.Carrier);
     }
 }

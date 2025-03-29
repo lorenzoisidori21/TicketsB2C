@@ -4,20 +4,26 @@ namespace TicketsB2C.Models;
 
 public class Ticket
 {
-    public Ticket(int id, double price, int departure, int destination, int type, int carrier)
-    {
-        Id = id;
-        Price = price;
-        Departure = departure;
-        Destination = destination;
-        Type = type;
-        Carrier = carrier;
-    }
     [Key]
     public int Id { get; set; }
+    [Range(0, Double.PositiveInfinity)]
     public double Price { get; set; }
-    public int Departure { get; set; }
-    public int Destination { get; set; }
-    public int Type { get; set; }
-    public int Carrier { get; set; }
+    [Required]
+    [MaxLength(100)]
+    public int DepartureId { get; set; }
+    [Required]
+    [MaxLength(100)]
+    public int DestinationId { get; set; }
+    [Required]
+    [MaxLength(100)]
+    public int TypeId { get; set; }
+    [Required]
+    [MaxLength(100)]
+    public int CarrierId { get; set; }
+
+    // navigation props
+    public City Departure { get; set; }
+    public City Destination { get; set; }
+    public TransportType Type { get; set; }
+    public Carrier Carrier { get; set; }
 }
