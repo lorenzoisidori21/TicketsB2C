@@ -1,13 +1,21 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace TicketsB2C.Dto;
 
 public class TicketDto
 {
+    public TicketDto(int id, double price, string departure, string destination, string transportType, string carrier)
+    {
+        Id = id;
+        Price = price;
+        Departure = departure;
+        Destination = destination;
+        TransportType = transportType;
+        Carrier = carrier;
+    }
+
     public int Id { get; set; }
     [Range(0, Double.PositiveInfinity)]
-    [Precision(6, 2)]
     public double Price { get; set; }
     [Required]
     [MaxLength(100)]

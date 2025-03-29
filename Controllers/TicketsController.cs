@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using TicketsB2C.Business;
 using TicketsB2C.Dto;
 using TicketsB2C.Models;
@@ -16,9 +10,9 @@ namespace TicketsB2C.Controllers
     public class TicketsController : ControllerBase
     {
         private readonly TicketsB2CDbContext _context;
-        private readonly TicketsBusiness _business;
+        private readonly ITicketsBusiness _business;
 
-        public TicketsController(TicketsB2CDbContext context, TicketsBusiness business)
+        public TicketsController(TicketsB2CDbContext context, ITicketsBusiness business)
         {
             _context = context;
             _business = business;
@@ -29,15 +23,14 @@ namespace TicketsB2C.Controllers
         public async Task<ActionResult<IEnumerable<TicketDto>>> GetTickets()
         {
             var tickets = await _business.GetTickets();
-            var dto = tickets.Select(t => new TicketDto()
-            {
-                Id = t.Id,
-                Price = t.Price,
-                Departure = t.Departure.Name,
-                Destination = t.Destination.Name,
-                TransportType = t.Type.Description,
-                Carrier = t.Carrier.Name
-            })
+            var dto = tickets.Select(t => new TicketDto(
+                t.Id,
+                t.Price,
+                t.Departure.Name,
+                t.Destination.Name,
+                t.Type.Description,
+                t.Carrier.Name
+            ))
                 .ToList();
 
             return Ok(dto);
@@ -75,15 +68,14 @@ namespace TicketsB2C.Controllers
                 });
             }
 
-            var dto = tickets.Select(t => new TicketDto()
-            {
-                Id = t.Id,
-                Price = t.Price,
-                Departure = t.Departure.Name,
-                Destination = t.Destination.Name,
-                TransportType = t.Type.Description,
-                Carrier = t.Carrier.Name
-            })
+            var dto = tickets.Select(t => new TicketDto(
+                    t.Id,
+                    t.Price,
+                    t.Departure.Name,
+                    t.Destination.Name,
+                    t.Type.Description,
+                    t.Carrier.Name
+                ))
             .ToList();
 
             return Ok(dto);
@@ -129,17 +121,16 @@ namespace TicketsB2C.Controllers
                 });
             }
 
-            var dto = tickets.Select(t => new TicketDto()
-            {
-                Id = t.Id,
-                Price = t.Price,
-                Departure = t.Departure.Name,
-                Destination = t.Destination.Name,
-                TransportType = t.Type.Description,
-                Carrier = t.Carrier.Name
-            })
+            var dto = tickets.Select(t => new TicketDto(
+                    t.Id,
+                    t.Price,
+                    t.Departure.Name,
+                    t.Destination.Name,
+                    t.Type.Description,
+                    t.Carrier.Name
+                ))
             .ToList();
-            
+
             return Ok(dto);
         }
     }

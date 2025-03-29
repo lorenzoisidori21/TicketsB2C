@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TicketsB2C.DataAccess;
+﻿using TicketsB2C.DataAccess;
 using TicketsB2C.Models;
 
 namespace TicketsB2C.Business;
 
-public class TicketsBusiness
+public class TicketsBusiness : ITicketsBusiness
 {
-    private readonly TicketsDal _dal;
-    public TicketsBusiness(TicketsDal dal)
+    private readonly ITicketsDal _dal;
+    public TicketsBusiness(ITicketsDal dal)
     {
         _dal = dal;
     }

@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TicketsB2C.Dto;
+﻿using Microsoft.EntityFrameworkCore;
 using TicketsB2C.Models;
 
 namespace TicketsB2C.DataAccess;
 
-public class TicketsDal
+public class TicketsDal : ITicketsDal
 {
     private readonly TicketsB2CDbContext _context;
 

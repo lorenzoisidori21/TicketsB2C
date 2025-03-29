@@ -5,21 +5,19 @@ using TicketsB2C.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
+
 var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
 builder.Services.AddDbContext<TicketsB2CDbContext>(opt => opt.UseSqlite(connectionString));
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-//builder.Services.AddOpenApi();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<TicketsDal, TicketsDal>();
-builder.Services.AddScoped<TicketsBusiness, TicketsBusiness>();
+
+builder.Services.AddScoped<ITicketsDal, TicketsDal>();
+builder.Services.AddScoped<ITicketsBusiness, TicketsBusiness>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -27,9 +25,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
