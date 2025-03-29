@@ -12,6 +12,16 @@ public class TicketsDal : ITicketsDal
         _context = ctx;
     }
 
+    public async Task<Ticket?> GetTicket(int id)
+    {
+        return await _context.Tickets
+            .Include(t => t.Carrier)
+            .Include(t => t.Destination)
+            .Include(t => t.Departure)
+            .Include(t => t.Type)
+            .FirstOrDefaultAsync(t => t.Id == id);
+    }
+
     public async Task<IList<Ticket>> GetTickets()
     {
         return await _context.Tickets

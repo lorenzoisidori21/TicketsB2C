@@ -23,4 +23,22 @@ public class TicketsBusiness : ITicketsBusiness
     {
         return await _dal.SearchTickets(departure, destination);
     }
+
+    public async Task<CheckoutSummary> BuyTickets(int ticketId, int quantity)
+    {
+        var ticket = await _dal.GetTicket(ticketId);
+        if (ticket == null)
+        {
+            return new CheckoutSummary(ticketId, null, null, null, null, quantity, 0);
+        }
+
+        // TODO perform payment
+
+        var summary = new CheckoutSummary(ticketId, ticket.Departure, ticket.Destination, ticket.Carrier, ticket.Type, quantity, ticket.Price * quantity)
+        {
+            Success = true
+        };
+        return summary;
+
+    }
 }

@@ -47,7 +47,7 @@ namespace TicketsB2C.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
-        public async Task<ActionResult<IEnumerable<TicketDto>>> GetTicketsByCarrier(string carrier = "")
+        public async Task<ActionResult<IEnumerable<TicketDto>>> GetTicketsByCarrier(string carrier)
         {
             if (string.IsNullOrEmpty(carrier))
                 return BadRequest(new ProblemDetails
@@ -92,7 +92,7 @@ namespace TicketsB2C.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ProblemDetails))]
-        public async Task<ActionResult<IEnumerable<TicketDto>>> SearchTickets(string departure = "", string destination = "")
+        public async Task<ActionResult<IEnumerable<TicketDto>>> SearchTickets(string departure, string destination)
         {
             if (string.IsNullOrEmpty(departure))
                 return BadRequest(new ProblemDetails
@@ -130,6 +130,54 @@ namespace TicketsB2C.Controllers
                     t.Carrier.Name
                 ))
             .ToList();
+
+            return Ok(dto);
+        }
+        /// <summary>
+        /// POST: api/Tickets/BuyTickets
+        /// </summary>
+        /// <param name="ticket">TicketId</param>
+        /// <param name="quantity">Ticket quantity</param>
+        /// <returns>Checkout summary</returns>
+        /// <response code="400">Please, insert a ticket id/ Please insert a quantity > 0</response>
+        /// <response code="404">Ticket not found</response>
+        [HttpPost("BuyTickets")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<IEnumerable<CheckoutSummaryDto>>> BuyTickets(int ticket, int quantity)
+        {
+            if (quantity <= 0)
+                return BadRequest(new ProblemDetails
+                {
+                    Status = StatusCodes.Status404NotFound,
+                    Title = "Invalid request",
+                    Detail = "Please insert a quantity > 0"
+                });
+
+            var summary = await _business.BuyTickets(ticket, quantity);
+
+            if (!summary.Success)
+            {
+                // actually the only reason why BuyTickets fails, is because the ticket id doesn't exist
+                // if there will be other reasons (payment refused, ..) the response should be more detailed
+                return NotFound(new ProblemDetails
+                {
+                    Status = StatusCodes.Status404NotFound,
+                    Title = "Ticket not found",
+                    Detail = "Requested ticket is not available."
+                });
+            }
+
+            var dto = new CheckoutSummaryDto(
+                ticket,
+                summary.Departure.Name,
+                summary.Destination.Name,
+                summary.Carrier.Name,
+                summary.Type.Description,
+                quantity,
+                summary.TotalAmount,
+                summary.Success
+            );
 
             return Ok(dto);
         }
