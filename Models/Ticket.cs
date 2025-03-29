@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace TicketsB2C.Models;
 
@@ -7,6 +8,7 @@ public class Ticket
     [Key]
     public int Id { get; set; }
     [Range(0, Double.PositiveInfinity)]
+    [Precision(6,2)]
     public double Price { get; set; }
     [Required]
     [MaxLength(100)]

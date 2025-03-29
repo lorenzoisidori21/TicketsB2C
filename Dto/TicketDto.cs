@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace TicketsB2C.Dto;
 
@@ -6,6 +7,7 @@ public class TicketDto
 {
     public int Id { get; set; }
     [Range(0, Double.PositiveInfinity)]
+    [Precision(6, 2)]
     public double Price { get; set; }
     [Required]
     [MaxLength(100)]
