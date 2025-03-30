@@ -2,7 +2,7 @@
 
 public class CheckoutSummaryDto
 {
-    public CheckoutSummaryDto(int ticketId, string departure, string destination, string carrier, string type, int quantity, double totalAmount, bool success)
+    public CheckoutSummaryDto(int ticketId, string departure, string destination, string carrier, string type, int quantity, decimal totalAmount, decimal discountApplied, bool success)
     {
         TicketId = ticketId;
         Departure = departure;
@@ -11,6 +11,7 @@ public class CheckoutSummaryDto
         Type = type;
         Quantity = quantity;
         TotalAmount = totalAmount;
+        DiscountApplied = discountApplied;
         Success = success;
     }
 
@@ -20,6 +21,7 @@ public class CheckoutSummaryDto
     public string Carrier { get; set; }
     public string Type { get; set; }
     public int Quantity { get; set; }
-    public double TotalAmount { get; set; }
-    public bool Success { get; set; } = false;
+    public decimal TotalAmount { get; set; }
+    public decimal DiscountApplied { get; set; }
+    public bool Success { get; set; }
 }

@@ -176,6 +176,7 @@ namespace TicketsB2C.Controllers
                 summary.Type.Description,
                 quantity,
                 summary.TotalAmount,
+                summary.DiscountApplied,
                 summary.Success
             );
 

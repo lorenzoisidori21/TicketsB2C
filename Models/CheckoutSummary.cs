@@ -2,7 +2,7 @@
 
 public class CheckoutSummary
 {
-    public CheckoutSummary(int ticketId, City departure, City destination, Carrier carrier, TransportType type, int quantity, double totalAmount)
+    public CheckoutSummary(int ticketId, City departure, City destination, Carrier carrier, TransportType type, int quantity, decimal totalAmount, decimal discountApplied)
     {
         TicketId = ticketId;
         Departure = departure;
@@ -11,6 +11,7 @@ public class CheckoutSummary
         Type = type;
         Quantity = quantity;
         TotalAmount = totalAmount;
+        DiscountApplied = discountApplied;
     }
 
     public int TicketId { get; set; }
@@ -19,6 +20,7 @@ public class CheckoutSummary
     public Carrier Carrier { get; set; }
     public TransportType Type { get; set; }
     public int Quantity { get; set; }
-    public double TotalAmount { get; set; }
+    public decimal TotalAmount { get; set; }
+    public decimal DiscountApplied { get; set; }
     public bool Success { get; set; } = false;
 }

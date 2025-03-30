@@ -9,7 +9,7 @@ public class Ticket
     public int Id { get; set; }
     [Range(0, Double.PositiveInfinity)]
     [Precision(6,2)]
-    public double Price { get; set; }
+    public decimal Price { get; set; }
     [Required]
     [MaxLength(100)]
     public int DepartureId { get; set; }

@@ -1,14 +1,17 @@
 ﻿using TicketsB2C.DataAccess;
 using TicketsB2C.Models;
+using TicketsB2C.Services;
 
 namespace TicketsB2C.Business;
 
 public class TicketsBusiness : ITicketsBusiness
 {
     private readonly ITicketsDal _dal;
-    public TicketsBusiness(ITicketsDal dal)
+    private readonly IDiscountService _discountService;
+    public TicketsBusiness(ITicketsDal dal, IDiscountService discountService)
     {
         _dal = dal;
+        _discountService = discountService;
     }
 
     public async Task<IList<Ticket>> GetTickets()
@@ -29,16 +32,21 @@ public class TicketsBusiness : ITicketsBusiness
         var ticket = await _dal.GetTicket(ticketId);
         if (ticket == null)
         {
-            return new CheckoutSummary(ticketId, null, null, null, null, quantity, 0);
+            return new CheckoutSummary(ticketId, null, null, null, null, quantity, 0, 0);
         }
 
         // TODO perform payment
 
-        var summary = new CheckoutSummary(ticketId, ticket.Departure, ticket.Destination, ticket.Carrier, ticket.Type, quantity, ticket.Price * quantity)
+        decimal percentageOff = _discountService.CalculateDiscount(ticket.TypeId, quantity);
+        decimal appliedDiscount = 0;
+        if (percentageOff > 0)
+            appliedDiscount = ticket.Price * quantity * (percentageOff / 100);
+        appliedDiscount = Math.Round(appliedDiscount, 2);
+        decimal totalAmount = (ticket.Price * quantity) - appliedDiscount;
+        var summary = new CheckoutSummary(ticketId, ticket.Departure, ticket.Destination, ticket.Carrier, ticket.Type, quantity, totalAmount, appliedDiscount)
         {
             Success = true
         };
         return summary;
-
     }
 }

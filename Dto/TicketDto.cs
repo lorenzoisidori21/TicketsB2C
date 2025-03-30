@@ -4,7 +4,7 @@ namespace TicketsB2C.Dto;
 
 public class TicketDto
 {
-    public TicketDto(int id, double price, string departure, string destination, string transportType, string carrier)
+    public TicketDto(int id, decimal price, string departure, string destination, string transportType, string carrier)
     {
         Id = id;
         Price = price;
@@ -16,7 +16,7 @@ public class TicketDto
 
     public int Id { get; set; }
     [Range(0, Double.PositiveInfinity)]
-    public double Price { get; set; }
+    public decimal Price { get; set; }
     [Required]
     [MaxLength(100)]
     public string Departure { get; set; }
