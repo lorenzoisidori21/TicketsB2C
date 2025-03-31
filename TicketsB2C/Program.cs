@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using TicketsB2C.Business;
 using TicketsB2C.DataAccess;
 using TicketsB2C.Models;
@@ -16,14 +15,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IDiscountStrategy, NoDiscountStrategy>();
-var quantityDiscountConfig = new Dictionary<int, int> // configuration could be loaded from appsettings.json
+var quantityDiscountConfig = new Dictionary<int, int> // configuration could be loaded from appsettings.json or could have a default and be overridden by another webapi call
 {
     { 5, 5 }, // 5 tickets - 5% off
     { 10, 10 }, // 10 tickets - 10% off
     { 20, 20 }, // 20 tickets - 20% off
 };
 builder.Services.AddScoped<IDiscountStrategy>(sp => new QuantityDiscountStrategy(quantityDiscountConfig));
-var transportTypeDiscountConfig = new Dictionary<int, int> // configuration could be loaded from appsettings.json
+var transportTypeDiscountConfig = new Dictionary<int, int> // configuration could be loaded from appsettings.json or could have a default and be overridden by another webapi call
 {
     { 2, 5 }, // transport type 2 (train) - 5% off
 };

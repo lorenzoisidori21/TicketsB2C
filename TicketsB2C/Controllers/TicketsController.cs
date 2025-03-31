@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TicketsB2C.Business;
 using TicketsB2C.Dto;
-using TicketsB2C.Models;
 
 namespace TicketsB2C.Controllers
 {
@@ -9,17 +8,17 @@ namespace TicketsB2C.Controllers
     [ApiController]
     public class TicketsController : ControllerBase
     {
-        private readonly TicketsB2CDbContext _context;
         private readonly ITicketsBusiness _business;
 
-        public TicketsController(TicketsB2CDbContext context, ITicketsBusiness business)
+        public TicketsController(ITicketsBusiness business)
         {
-            _context = context;
             _business = business;
         }
 
         // GET: api/Tickets
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult<IEnumerable<TicketDto>>> GetTickets()
         {
             var tickets = await _business.GetTickets();
@@ -33,6 +32,10 @@ namespace TicketsB2C.Controllers
             ))
                 .ToList();
 
+            if(!dto.Any())
+            {
+                return NoContent();
+            }
             return Ok(dto);
         }
 
